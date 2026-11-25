@@ -8,6 +8,16 @@ This application foundation provides an Axum bootstrap, PostgreSQL integration a
 - PostgreSQL 17 with TimescaleDB 2.x installed and the `timescaledb` extension available
 - `DATABASE_URL` to validate SQLx queries at compile time, or offline `.sqlx` metadata generated with `cargo sqlx prepare`
 
+## Quick install (Ubuntu)
+
+On Ubuntu 22.04 or 24.04, run this from an interactive terminal after the installer is available on `main`:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/elsm4n/NMS-light/main/scripts/install-ubuntu.sh | bash
+```
+
+The installer asks for the initial admin email and password, requests `sudo` when needed, installs PostgreSQL 17 and TimescaleDB, builds the app against a temporary migrated database for SQLx checks, then installs and starts a `systemd` service. The API listens only on `127.0.0.1:8080`; discovery stays disabled. It refuses to overwrite an existing app installation or PostgreSQL 17 cluster. This is a development/single-server setup, not a substitute for production backups, TLS/reverse proxy, or high availability.
+
 ## Configuration
 
 Copy `.env.example` to `.env`, then set `NMS_DATABASE_URL`, `NMS_JWT_SECRET` (at least 32 bytes), and `NMS_CREDENTIAL_KEY_HEX` (exactly 32 bytes represented by 64 hexadecimal characters). Do not commit `.env` or use example values as secrets.
