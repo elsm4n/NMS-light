@@ -27,6 +27,10 @@ async fn main() -> anyhow::Result<()> {
         config.max_probe_concurrency,
         shutdown.clone(),
     );
+    let metrics_chunk_worker = tokio::spawn(db::run_metrics_chunk_maintenance(
+        state.db.clone(),
+        shutdown.clone(),
+    ));
     let polling_worker = tokio::spawn(rust_nms::polling::run(state.clone(), shutdown.clone()));
     let webhook_worker = tokio::spawn(rust_nms::webhook_dispatcher::run(
         state.clone(),
@@ -45,6 +49,7 @@ async fn main() -> anyhow::Result<()> {
     shutdown.cancel();
     polling_worker.await?;
     webhook_worker.await?;
+    metrics_chunk_worker.await?;
     server_result?;
 
     Ok(())
